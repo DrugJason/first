@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+        <struts>
+        	<package name="first" namespace="/" extends="struts-default">
+        		<interceptors>
+        			<interceptor name="lanjieqi" class="Interceptor.filter"></interceptor>
+        		</interceptors>
+        		<action name="login" class="loginAction">
+        			<result name="success">/main.jsp</result>
+        			<result name="error">/login.jsp</result>
+        		</action>
+        		<action name="reg" class="reg">
+        			<result name="success">/login.jsp</result>
+        			<result name="error">/register.jsp</result>
+        		</action> 
+        		<action name="book_*" class="Action.Book" method="{1}">
+        			<interceptor-ref name="lanjieqi"></interceptor-ref>
+        			<result name="success">/success.jsp</result>
+        			<result name="error">/login.jsp</result>
+        			<allowed-methods>add,update,del,find</allowed-methods>
+        		</action>     
+        	</package>
+        </struts>

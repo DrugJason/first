@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns="http://www.springframework.org/schema/beans" 
+		xmlns:aop="http://www.springframework.org/schema/aop" 
+		xmlns:context="http://www.springframework.org/schema/context" 
+		xmlns:tx="http://www.springframework.org/schema/tx" 
+		xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.2.xsd 
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.2.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.2.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-4.2.xsd ">
+		
+		<!-- c3p0连接池配置数据库信息 -->
+   		<bean name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource ">
+   			<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+   			<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/xuexi?characterEncoding=utf8"></property>
+   			<property name="user" value="root"></property>
+   			<property name="password" value="root"></property>
+   		</bean>
+   		<!-- sessionFactory创建交给Spring管理 -->
+   		<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+   			<property name="dataSource" ref="dataSource"></property>
+   			<property name="configLocations" value="classpath:hibernate.cfg.xml"></property>
+   		</bean>
+   		<!-- 创建HibernateTemplate对象 -->
+   		<bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+   			<!-- 注入sessionFactory对象 -->
+   			<property name="sessionFactory" ref="sessionFactory"></property>
+   		</bean>
+   		<!-- 配置事务 -->
+   		<bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+   			<property name="sessionFactory" ref="sessionFactory"></property>
+   		</bean>
+   		<!-- 开启事务注解 -->
+   		<tx:annotation-driven transaction-manager="transactionManager"/>
+   		<!-- 创建Action对象 -->
+   		<bean id="loginAction" class="Action.Login" scope="prototype">
+   			<property name="userdao" ref="userdao"></property>
+   		</bean>
+   		<bean id="reg" class="Action.Register" scope="prototype">
+   			<property name="userdao" ref="userdao"></property>
+   		</bean>
+   		
+   		<!-- 创建Service对象 -->
+   		<bean id="userdao" class="dao.UserDao">
+   		  	<property name="hibernateTemplate" ref="hibernateTemplate"></property>
+   		</bean>
+</beans>
